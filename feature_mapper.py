@@ -45,37 +45,3 @@ def map_suricata_flow_to_features(doc: dict) -> dict:
     }
 
     return features
-
-if __name__ == "__main__":
-    sample_doc = {
-        "@timestamp": "2026-04-12T08:56:25.466Z",
-        "source": {
-            "ip": "192.168.1.56",
-            "port": 57621,
-            "bytes": 86,
-            "packets": 1
-        },
-        "destination": {
-            "ip": "192.168.1.255",
-            "port": 57621,
-            "bytes": 0,
-            "packets": 0
-        },
-        "network": {
-            "transport": "udp"
-        },
-        "event": {
-            "duration": 0,
-            "original": "{\"proto\":\"UDP\",\"app_proto\":\"failed\"}"
-        },
-        "suricata": {
-            "eve": {
-                "flow": {
-                    "state": "new"
-                }
-            }
-        }
-    }
-
-    mapped = map_suricata_flow_to_features(sample_doc)
-    print(mapped)
