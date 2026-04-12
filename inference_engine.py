@@ -1,6 +1,6 @@
 import joblib
 from feature_mapper import map_suricata_flow_to_features
-from elastic_fetcher import fetch_latest_flow_without_alert
+from elastic_fetcher import fetch_latest_flow_without_alert, write_ml_result, build_ml_result_doc
 from preprocessor import prepare_features_for_inference
 
 def load_model(model_path: str):
@@ -33,7 +33,11 @@ if __name__ == "__main__":
     else:
         mapped_features = map_suricata_flow_to_features(doc)
         model = load_model("Models/XGBoost_Model_Integration (5 fold)/XGBoost_Model_Integration.pkl")
-        result = predict_one(model, mapped_features)
+        prediction = predict_one(model, mapped_features)
+
+        result_doc = build_ml_result_doc(doc, mapped_features, prediction)
+        response = write_ml_result(result_doc)
 
         print(mapped_features)
+        print(prediction)
         print(result)
