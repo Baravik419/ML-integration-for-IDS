@@ -40,4 +40,4 @@ if __name__ == "__main__":
 
         print(mapped_features)
         print(prediction)
-        print(result)
+        print(response)

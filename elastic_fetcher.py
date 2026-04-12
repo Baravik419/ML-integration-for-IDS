@@ -38,12 +38,30 @@ def fetch_latest_flow_without_alert():
 
 def write_ml_result(result_doc: dict):
     elasticsearch = get_es_client()
-    response = elasticsearch.index(index="ml-suricata-results", document=result_doc)
+    response = elasticsearch.index(index="filebeat-9.3.3", document=result_doc)
     return response
 
 def build_ml_result_doc(source_doc: dict, mapped_features: dict, prediction: dict) -> dict:
     return {
         "@timestamp": source_doc["@timestamp"],
+
+        #EVE style
+        "timestamp": source_doc["@timestamp"],
+        "event_type": "alert",
+        "src_ip": mapped_features.get("src_ip"),
+        "src_port": mapped_features.get("src_port"),
+        "dest_ip": mapped_features.get("dst_ip"),
+        "dest_port": mapped_features.get("dst_port"),
+        "proto": mapped_features.get("proto"),
+
+        "alert": {
+            "signature": f"ML prediction: {prediction['predicted_class']}",
+            "signature_id": 9000001,
+            "category": "ML IDS Prediction",
+            "severity": 2
+        },
+
+        #ECS style
         "event": {
             "kind": "alert",
             "module": "ml_ids",
