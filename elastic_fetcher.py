@@ -62,33 +62,52 @@ def build_ml_result_doc(source_doc: dict, mapped_features: dict, prediction: dic
         },
 
         #ECS style
+        "suricata": {
+            "eve": {
+                "event_type": "alert",
+                "in_iface": source_doc.get("suricata", {}).get("eve", {}).get("in_iface", "ens18"),
+                "alert": {
+                    "signature_id": 9000001,
+                    "signature": f"ML prediction: {prediction['predicted_class']}",
+                    "category": "ML IDS Prediction"
+                }
+            }
+        },
+
         "event": {
             "kind": "alert",
             "module": "ml_ids",
             "dataset": "ml.suricata",
+            "severity": 2,
             "category": ["network", "intrusion_detection"],
             "type": ["info"]
         },
+
         "ml": {
             "predicted_class": prediction["predicted_class"],
             "confidence": prediction["confidence"],
         },
+
         "source":{
             "ip": mapped_features.get("src_ip"),
             "port": mapped_features.get("src_port"),
         },
+
         "destination":{
             "ip": mapped_features.get("dst_ip"),
             "port": mapped_features.get("dst_port"),
         },
+
         "network":{
             "transport": mapped_features.get("proto"),
         },
+
         "suricata": {
             "flow":{
                 "state": mapped_features.get("conn_state"),
             }
         },
+
         "related": {
           "ip": [
               mapped_features.get("src_ip"),
