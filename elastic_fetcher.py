@@ -109,3 +109,26 @@ def build_ml_result_doc(source_doc: dict, mapped_features: dict, prediction: dic
           ]
         }
     }
+
+def fetch_recent_flows_without_alert(size: int = 20):
+    elasticsearch = get_es_client()
+
+    query = {
+        "size": size,
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"suricata.eve.event_type": "flow"}},
+                    {"term": {"suricata.eve.flow.alerted": False}}
+                ]
+            }
+        },
+        "sort": [
+            {"@timestamp": {"order": "desc"}}
+        ]
+    }
+
+    response = elasticsearch.search(index="filebeat-*", body=query)
+    hits = response["hits"]["hits"]
+
+    return [hit["_source"] for hit in hits]
