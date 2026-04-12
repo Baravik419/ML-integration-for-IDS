@@ -102,12 +102,6 @@ def build_ml_result_doc(source_doc: dict, mapped_features: dict, prediction: dic
             "transport": mapped_features.get("proto"),
         },
 
-        "suricata": {
-            "flow":{
-                "state": mapped_features.get("conn_state"),
-            }
-        },
-
         "related": {
           "ip": [
               mapped_features.get("src_ip"),
