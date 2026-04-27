@@ -1,0 +1,6 @@
+joblib
+pandas
+datetime
+elasticsearch
+xgboost
+scikit-learn

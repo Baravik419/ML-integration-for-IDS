@@ -1,0 +1,47 @@
+/Users/ervinborkovski/PycharmProjects/IDS-for-IoT-networks/.venv/bin/python /Users/ervinborkovski/PycharmProjects/IDS-for-IoT-networks/xgboost_model_integration.py
+/Users/ervinborkovski/PycharmProjects/IDS-for-IoT-networks/data_preprocessing_integration.py:59: DtypeWarning: Columns (0: src_bytes) have mixed types. Specify dtype option on import or set low_memory=False.
+  IoT_network_data = pd.read_csv("IoT_network_data.csv")
+Total data preparation: 36.576288 s
+Total preprocessing: 36.826838 s
+Fold 1 final training shapes:
+  X_train_final: (2717013, 13)
+  y_train_final: (2717013,)
+Fold 2 final training shapes:
+  X_train_final: (2717013, 13)
+  y_train_final: (2717013,)
+Fold 3 final training shapes:
+  X_train_final: (2717014, 13)
+  y_train_final: (2717014,)
+Fold 4 final training shapes:
+  X_train_final: (2717014, 13)
+  y_train_final: (2717014,)
+Fold 5 final training shapes:
+  X_train_final: (2717014, 13)
+  y_train_final: (2717014,)
+Total folds generation and balancing: 43.335039 s
+[16:11:51] INFO: /Users/runner/work/xgboost/xgboost/src/data/iterative_dmatrix.cc:56: Finished constructing the `IterativeDMatrix`: (2717013, 13, 35321169).
+Fold 1 learning time: 68.716791 s
+Fold 1 prediction time: 2.620150 s
+[16:13:03] INFO: /Users/runner/work/xgboost/xgboost/src/data/iterative_dmatrix.cc:56: Finished constructing the `IterativeDMatrix`: (2717013, 13, 35321169).
+Fold 2 learning time: 64.029857 s
+Fold 2 prediction time: 2.510774 s
+[16:14:09] INFO: /Users/runner/work/xgboost/xgboost/src/data/iterative_dmatrix.cc:56: Finished constructing the `IterativeDMatrix`: (2717014, 13, 35321182).
+Fold 3 learning time: 66.210052 s
+Fold 3 prediction time: 2.446639 s
+[16:15:18] INFO: /Users/runner/work/xgboost/xgboost/src/data/iterative_dmatrix.cc:56: Finished constructing the `IterativeDMatrix`: (2717014, 13, 35321182).
+Fold 4 learning time: 63.660774 s
+Fold 4 prediction time: 2.392682 s
+[16:16:24] INFO: /Users/runner/work/xgboost/xgboost/src/data/iterative_dmatrix.cc:56: Finished constructing the `IterativeDMatrix`: (2717014, 13, 35321182).
+Fold 5 learning time: 63.514013 s
+Fold 5 prediction time: 2.443733 s
+
+All fold accuracies:  [0.9999955833900132, 0.9999955833900132, 0.9999882223560294, 0.999995583383511, 0.9999926389725183]
+Mean accuracy:  0.9999935222984171
+Best accuracy:  0.9999955833900132
+Best fold number:  1
+Total training time: 381.942453 s
+
+Best model from fold 1 saved!
+Total code running time: 387.595916 s
+
+Process finished with exit code 0
