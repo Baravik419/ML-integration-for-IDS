@@ -4,30 +4,51 @@ import subprocess
 import sys
 import time
 import webbrowser
-import getpass
+from getpass import getpass
 import signal
 from pathlib import Path
 from pyfiglet import figlet_format
 
 BASE_DIR = Path(__file__).resolve().parent
 ES_PASSWORD = None
+SUDO_PASSWORD = None
 ML_SERVICE_PATH = str(BASE_DIR / "ml_service.py")
 ML_PID_FILE = BASE_DIR / "ml_service.pid"
 ML_LOG_FILE = BASE_DIR / "ml_service.log"
 SERVICES = ["suricata", "filebeat", "elasticsearch", "evebox"]
-EVEBOX_URL = "http://localhost:5601"
+STOP_SERVICES = ["evebox", "filebeat", "suricata", "elasticsearch"]
+EVEBOX_URL = "https://127.0.0.1:5636"
 PYTHON_BIN = sys.executable
 
 # Clears the terminal screen
 def clear_screen():
-    os.system("cls" if os.name == "nt" else "clear")
+    if os.environ.get("TERM"):
+        os.system("clear")
 
 # For running commands
-def run_cmd(cmd: list[str]) -> tuple[int, str]:
+def run_cmd(cmd: list[str], use_sudo: bool = False) -> tuple[int, str]:
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if use_sudo:
+            password = get_sudo_password()
+            cmd = ["sudo", "-S"] + cmd
+            result = subprocess.run(
+                cmd,
+                input=password + "\n",
+                capture_output=True,
+                text=True,
+                check=False
+            )
+        else:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=False
+            )
+
         output = (result.stdout or "") + (result.stderr or "")
         return result.returncode, output.strip()
+
     except Exception as error:
         return 1, f"Command failed: {error}"
 
@@ -42,9 +63,20 @@ def check_service_status(service_name: str) -> str:
 
 # Starting service one by one
 def start_service(service_name: str):
-    code, output = run_cmd(["sudo", "systemctl", "start", service_name])
+    code, output = run_cmd(["systemctl", "start", service_name], use_sudo=True)
+
     if code != 0:
         print(f"{service_name} start failed: {output}")
+
+    time.sleep(1)
+    return f"{service_name}: {check_service_status(service_name)}"
+
+# Stopping service one by one
+def stop_service(service_name: str):
+    code, output = run_cmd(["systemctl", "stop", service_name], use_sudo=True)
+
+    if code !=0:
+        print(f"{service_name} stop failed: {output}")
 
     time.sleep(1)
     return f"{service_name}: {check_service_status(service_name)}"
@@ -57,6 +89,24 @@ def start_ids_services() -> list[str]:
         results.append(start_service(service))
 
     return results
+
+# Stopping all services
+def stop_ids_services() -> list[str]:
+    results = []
+
+    for service in STOP_SERVICES:
+        results.append(stop_service(service))
+
+    return results
+
+# Getting sudo password
+def get_sudo_password() -> str:
+    global SUDO_PASSWORD
+
+    if SUDO_PASSWORD is None:
+        SUDO_PASSWORD = getpass("Enter sudo password: ")
+
+    return SUDO_PASSWORD
 
 # Getting password for the Elasticsearch
 def get_es_password() -> str:
@@ -164,8 +214,7 @@ def print_menu(message: str = "") -> None:
     print("1. Start IDS")
     print("2. Start ML model")
     print("3. Open EveBox")
-    print("4. Show statuses")
-    print("5. Stop ML model")
+    print("4. Stop ML model")
     print("0. Exit")
     print()
 
@@ -198,12 +247,15 @@ def main() -> None:
             last_message = open_evebox()
 
         elif choice == "4":
-            last_message = "\n".join(check_service_status())
-
-        elif choice == "5":
             last_message = stop_ml_model()
 
         elif choice == "0":
+            shutdown_results = []
+
+            shutdown_results.append(stop_ml_model())
+            shutdown_results.extend(stop_ids_services())
+
+            print("\n".join(shutdown_results))
             print("Goodbye software engineer!")
             break
 
