@@ -1,9 +1,12 @@
+import os
 from elasticsearch import Elasticsearch
-from getpass import getpass
 
 def get_es_client():
-    password = getpass("Enter Elasticsearch password: ")
+    password = os.environ.get("ES_PASSWORD")
 
+    if not password:
+        raise ValueError("ES_PASSWORD environment variable is not set")
+    
     return Elasticsearch(
         "https://127.0.0.1:9200",
         basic_auth=("elastic", password),
