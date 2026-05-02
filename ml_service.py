@@ -4,10 +4,8 @@ from elastic_fetcher import fetch_recent_flows_without_alert, write_ml_result
 from feature_mapper import map_suricata_flow_to_features
 from inference_engine import load_model, predict_one, build_ml_result_doc
 
-
 POLL_INTERVAL_SECONDS = 10
 FETCH_BATCH_SIZE = 20
-
 
 def get_flow_unique_id(doc: dict) -> str:
     suricata_eve = doc.get("suricata", {}).get("eve", {})
