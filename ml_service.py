@@ -56,7 +56,3 @@ def run_ml_service():
             print(f"Service error: {error}")
 
         time.sleep(POLL_INTERVAL_SECONDS)
-
-
-if __name__ == "__main__":
-    run_ml_service()
