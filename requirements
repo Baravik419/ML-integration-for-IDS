@@ -5,3 +5,4 @@ elasticsearch
 xgboost
 scikit-learn
 pyfiglet
+pytest
