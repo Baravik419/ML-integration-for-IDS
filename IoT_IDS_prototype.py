@@ -262,6 +262,3 @@ def main() -> None:
             print("You haven't designed it in your project!")
 
         input("\nPress Enter to continue...")
-
-if __name__ == "__main__":
-    main()
